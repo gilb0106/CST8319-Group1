@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>Book List</title>
+    {% extends "toolbar/base.html" %}
+    {% block content %}
+            <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+</head>
+<body>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h1>Book Catalogue</h1>
+
+    <form action="{{ url_for('order_book') }}" method="GET">
+        <input type="text" name="search" placeholder="Search by title or author" value="{{ request.args.get('search', '') }}">
+        <div class="buttons">
+        <button type="submit">Search</button>
+        <a href="{{ url_for('order_book') }}" class="button">Clear</a>
+        </div>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            {% if role == 'librarian' %}
+            <th>Branch</th>
+            {% endif %}
+            <th>Action</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.get_book_name() }}</td>
+            <td>{{ book.get_book_author() }}</td>
+            <td>{{ book.get_genre() }}</td>
+            {% if role == 'librarian' %}
+            <td>
+                <form action="{{ url_for('order_book') }}" method="post">
+                    <input type="hidden" name="title" value="{{ book.get_book_name() }}">
+                    <input type="hidden" name="author" value="{{ book.get_book_author() }}">
+                    <input type="hidden" name="genre" value="{{ book.get_genre() }}">
+                    <select name="branch_id">
+                        <option value="" disabled selected>Please select a branch</option>
+                        <option value="1">Main Library</option>
+                        <option value="2">Kiosk Library</option>
+                    </select>
+                    <td>
+                        <button type="submit">Order Book</button>
+                    </td>
+                </form>
+            </td>
+            {% else %}
+            <td>
+                {% if books in books %}
+                    <p>Already in wishlist</p>
+                {% else %}
+                    <form class="form-wishlist" action="{{ url_for('order_book') }}" method="post">
+                        <input type="hidden" name="title" value="{{ book.get_book_name() }}">
+                        <input type="hidden" name="author" value="{{ book.get_book_author() }}">
+                        <input type="hidden" name="genre" value="{{ book.get_genre() }}">
+                        <button type="submit">Add to Wishlist</button>
+                    </form>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+</table>
+
+{% endblock %}
+</body>
+<footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+</html>

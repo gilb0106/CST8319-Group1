@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    {%extends "toolbar/base.html" %}
+    {%block content%}
+    <title>Books</title>
+            <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+    <h1>Books</h1>
+<form action="/books.html" method="GET">
+    <input type="text" name="search" placeholder="Search by title, author, or genre" style="width: 300px;">
+    <div class="buttons">
+        <button type="submit">Search</button>
+        <a href="/books.html" class="button">Clear</a>
+    </div>
+</form>
+<table border="1">
+    <tr>
+        <th>Book ID</th>
+        <th>Book Title</th>
+        <th>Book Author</th>
+        <th>Genre</th>
+        <th>Branch ID</th>
+        <th>Is Available?</th>
+        <th>Action</th>
+    </tr>
+    {% for book in books %}
+    <tr>
+        <td><a href="/book/{{ book.get_book_id() }}">{{ book.get_book_id() }}</a></td>
+        <td>{{ book.get_book_name() }}</td>
+        <td>{{ book.get_book_author() }}</td>
+        <td>{{ book.get_genre() }}</td>
+        <td>
+            {% if book.get_branch_id() == 1 %}
+                Main Library
+            {% elif book.get_branch_id() == 2 %}
+                Kiosk Library
+            {% else %}
+                Unknown Branch
+            {% endif %}
+        </td>
+
+        {% if book.get_is_available() %}
+            <td>Yes</td>
+            <td>
+                <form action="/books.html" method="post">
+                    <input type="hidden" name="book_id" value="{{ book.get_book_id() }}">
+                    <input type="hidden" name="action" value="checkout">
+                    <button type="submit">Checkout</button>
+                </form>
+            </td>
+        {% else %}
+            <td>No</td>
+            <td>
+                <form action="/books.html" method="post">
+                    <input type="hidden" name="book_id" value="{{ book.get_book_id() }}">
+                    <input type="hidden" name="action" value="return">
+                    <button type="submit">Return</button>
+                </form>
+            </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+<footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+{%endblock%}
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>Report Results</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboardcss.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('dashboard') }}" class="back-button">Go Back to Dashboard</a>
+
+    <h1>Your Query Results</h1>
+    <form id="exportForm" action="{{ url_for('export_csv') }}" method="post">
+        <table id="reportTable" border="1">
+            <thead>
+                <tr>
+                    <th>HistoryID</th>
+                    <th>BookID</th>
+                    <th>UserID</th>
+                    <th>Action</th>
+                    <th>ActionDate</th>
+                    <th>SupportMessageID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report_data %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <!-- Add hidden inputs for CSV export -->
+                    <input type="hidden" name="report_data[]" value="{{ row[0] }},{{ row[1] }},{{ row[2] }},{{ row[3] }},{{ row[4] }},{{ row[5] }}">
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Export to CSV</button>
+    </form>
+</body>
+<footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+</html>

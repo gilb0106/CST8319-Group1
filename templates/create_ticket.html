@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>Create Support Ticket</title>
+    {% extends "toolbar/base.html" %}
+    {% block content %}
+            <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+</head>
+<body>
+    <h1>Create Support Ticket</h1>
+    <form action="/logout" method="GET">
+        <button type="submit">Logout</button>
+    </form>
+
+    <form action="{{ url_for('create_ticket') }}" method="POST">
+        <div>
+            <label for="subject">Subject:</label><br>
+            <input type="text" id="subject" name="subject" required><br><br>
+        </div>
+        <div>
+            <label for="message_text">Message Text:</label><br>
+            <textarea id="message_text" name="message_text" rows="10" cols="50" required></textarea><br><br>
+        </div>
+        <div>
+            <input type="submit" value="Create Ticket">
+        </div>
+    </form>
+
+</body>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+{% endblock %}
+</html>

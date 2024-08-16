@@ -1,0 +1,79 @@
+
+CREATE TABLE IF NOT EXISTS Users (
+    UserID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserName TEXT NOT NULL,
+    UserEmail TEXT NOT NULL UNIQUE,
+    UserPhone TEXT,
+    Password TEXT NOT NULL,
+    Role TEXT CHECK (Role IN ('customer', 'librarian')) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Branches (
+    BranchID INTEGER PRIMARY KEY AUTOINCREMENT,
+    BranchName TEXT NOT NULL,
+    BranchLocation TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Books (
+    BookID INTEGER PRIMARY KEY AUTOINCREMENT,
+    BookTitle TEXT NOT NULL,
+    BookAuthor TEXT NOT NULL,
+    Genre TEXT NOT NULL,
+    BranchID INTEGER,
+    IsAvailable BOOLEAN DEFAULT 1,
+    FOREIGN KEY (BranchID) REFERENCES Branches(BranchID)
+);
+
+CREATE TABLE IF NOT EXISTS History (
+    HistoryID INTEGER PRIMARY KEY AUTOINCREMENT,
+    BookID INTEGER,
+    UserID INTEGER NOT NULL,
+    Action TEXT NOT NULL,
+    ActionDate DATE NOT NULL,
+    SupportMessageID INTEGER,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (SupportMessageID) REFERENCES SupportMessages(SupportMessageID)
+);
+
+CREATE TABLE IF NOT EXISTS Wishlist (
+    WishlistID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    BookTitle TEXT NOT NULL,
+    BookAuthor TEXT NOT NULL,
+    Genre TEXT NOT NULL,
+    IsAvailable BOOLEAN DEFAULT 0,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE IF NOT EXISTS Ratings (
+    RatingID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    BookID INTEGER NOT NULL,
+    Rating INTEGER NOT NULL CHECK (Rating BETWEEN 1 AND 5),
+    Review TEXT,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+
+CREATE TABLE IF NOT EXISTS SupportMessages (
+    SupportMessageID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    LibrarianID INTEGER,
+    Subject TEXT NOT NULL,
+    MessageText TEXT NOT NULL,
+    MessageDate DATETIME NOT NULL,
+    Status TEXT CHECK (Status IN ('open', 'closed')) DEFAULT 'open',
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (LibrarianID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE IF NOT EXISTS SupportComments (
+    CommentID INTEGER PRIMARY KEY AUTOINCREMENT,
+    SupportMessageID INTEGER NOT NULL,
+    UserID INTEGER NOT NULL,
+    CommentText TEXT NOT NULL,
+    CommentDate DATETIME NOT NULL,
+    FOREIGN KEY (SupportMessageID) REFERENCES SupportMessages(SupportMessageID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);

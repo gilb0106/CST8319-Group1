@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    {% extends "toolbar/base.html" %}
+    {% block content %}
+    <title>Book Details</title>
+        <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+</head>
+<body>
+
+    <h1>{{ book.get_book_name() }}</h1>
+    <p>Author: {{ book.get_book_author() }}</p>
+    <p>Genre: {{ book.get_genre() }}</p>
+    <p>Branch: {{ book.get_branch_id() }}</p>
+    <p>Is Available: {{ book.get_is_available() }}</p>
+
+    <h2>Rate this Book</h2>
+    <form action="{{ url_for('book_details', book_id=book.get_book_id()) }}" method="POST">
+        <label for="rating">Rating (1-5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required>
+        <br>
+        <label for="review">Review:</label>
+        <textarea id="review" name="review"></textarea>
+        <br>
+        <button type="submit">Submit Rating</button>
+    </form>
+
+    <h2>Reviews</h2>
+    <ul>
+        {% for review in reviews %}
+        <li>{{ review.rating }} stars - {{ review.review_text }} - by {{ review.username }}</li>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}
+</html>

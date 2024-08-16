@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toolbar.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a id="active" class="btn" href="/books.html"><i class="fa fa-fw fa-home"></i> Home</a>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">
+                <i class="fa fa-caret-down"></i> Books
+            </button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('book_page') }}">Books</a>
+                <a href="{{ url_for('order_book') }}">Order Book</a>
+            </div>
+        </div>
+        <div>
+            <a class="btn" href="{{ url_for('dashboard') }}"><i class="fa fa-solid fa-user"></i> Profile</a>
+        </div>
+        <div>
+            <a class="btn" href="{{ url_for('support') }}"><i class="fa fa-solid fa-envelope"></i>Support</a>
+        </div>
+        <div>
+            <a class="btn" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

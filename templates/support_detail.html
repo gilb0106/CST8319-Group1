@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>Support Ticket Detail</title>
+    {% extends "toolbar/base.html" %}
+    {% block content %}
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+</head>
+<body>
+    <h1>Support Ticket Detail</h1>
+
+    <h2>Ticket Details</h2>
+    <table border="1">
+        <tr>
+            <th>Support Message ID</th>
+            <td>{{ ticket[0] }}</td>
+        </tr>
+        <tr>
+            <th>Subject</th>
+            <td>{{ ticket[1] }}</td>
+        </tr>
+        <tr>
+            <th>Message Text</th>
+            <td>{{ ticket[2] }}</td>
+        </tr>
+        <tr>
+            <th>Last Modified</th>
+            <td>{{ ticket[3] }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {% if user_role == 'librarian' %}
+                    <form action="{{ url_for('support_detail', support_id=ticket[0]) }}" method="post">
+                        <select name="update_status" required>
+                            <option value="open" {% if ticket[4] == 'open' %} selected {% endif %}>Open</option>
+                            <option value="closed" {% if ticket[4] == 'closed' %} selected {% endif %}>Closed</option>
+                        </select>
+                        <input type="submit" value="Update Status">
+                    </form>
+                {% else %}
+                    {{ ticket[4] }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>For User</th>
+            <td>{{ ticket[5] }}</td>
+        </tr>
+    </table>
+
+    <h2>Post Update</h2>
+    <form action="{{ url_for('support_detail', support_id=ticket[0]) }}" method="post">
+        <label for="update_text">Update:</label><br>
+        <textarea id="update_text" name="update_text" rows="4" cols="50" required></textarea><br><br>
+        <input type="submit" value="Post Update">
+    </form>
+
+    <h2>Updates</h2>
+    <ul>
+        {% for comment in comments %}
+        <li>
+            <strong>{{ comment[2] }} ({{ comment[3] }})</strong> - {{ comment[1] }}<br>
+            {{ comment[0] }}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <footer>
+        <p><a href="terms_of_service.html">Terms of Service</a> |
+           <a href="privacy_policy.html">Privacy Policy</a></p>
+    </footer>
+    {% endblock %}
+</body>
+</html>

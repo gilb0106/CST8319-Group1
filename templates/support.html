@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    {%extends "toolbar/base.html" %}
+    {%block content%}
+    <title>Customer Support</title>
+            <link rel="stylesheet" type="text/css" href="../static/css/support.css">
+</head>
+<body>
+
+    <div class="main">
+        <h1>Customer Support</h1>
+
+        {% if user_role == 'customer' %}
+            <a href="{{ url_for('create_ticket') }}" class="btn">Create New Ticket</a>
+        {% endif %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Support Message ID</th>
+                    <th>Subject</th>
+                    <th>Message Text</th>
+                    <th>Last Modified</th>
+                    <th>Status</th>
+                    <th>For User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td><a href="{{ url_for('support_detail', support_id=ticket[0]) }}">{{ ticket[0] }}</a></td>
+                    <td>{{ ticket[1] }}</td>
+                    <td>{{ ticket[2] }}</td>
+                    <td>{{ ticket[3] }}</td>
+                    <td>{{ ticket[4] }}</td>
+                    <td>{{ ticket[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+    </div>
+
+    {% endblock %}
+</body>
+
+</html>

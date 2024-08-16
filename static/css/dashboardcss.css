@@ -1,0 +1,69 @@
+/* Container for tabs */
+.tabs {
+    display: flex;
+    cursor: pointer;
+    width: 100%; /* Ensure the tabs container takes up full width */
+}
+
+.tabs div {
+    flex: 1; /* Make each tab take up an equal amount of space */
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-right: 5px; /* Margin between tabs */
+    text-align: center; /* Center align text in tabs */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+.active {
+    background-color: #ddd; /* Highlight the active tab */
+}
+.tab-content {
+    display: none; /* Hide inactive tab contents */
+}
+.active-tab {
+    display: block; /* Show active tab content */
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+    background: #f3f3f3;
+    flex-direction: column;
+    margin: 0;
+}
+
+#customer-info-content table tbody tr td a, #wishlist-content table tbody tr td form input {
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    background-color: #14A87E;
+    width:100%;
+    font-size: 16px;
+
+    /* Fonts are different between these elements for some reason */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#customer-info-content table tbody tr td a:hover, #wishlist-content table tbody tr td form input:hover {
+    background-color: #1b8868;
+}
+
+.active {
+    background-color: #14A87E;
+    color: white;
+}
+
+.tabs {
+    width:80%;
+}
+
+#wishlist-content table tbody tr td form input {
+
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboardcss.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    {% extends "toolbar/base.html" %}
+    {% block content %}
+</head>
+<body>
+    {% if user_role == 'librarian' %}
+        <h1>Librarian Dashboard</h1>
+        <div class="tabs">
+            <div id="users-tab" class="active">All Users</div>
+            <div id="history-tab">All Users Borrowing History</div>
+            <div id="late-books-tab">All Users Late Books</div>
+            <div id="run-reports-tab">Run Reports</div>
+        </div>
+
+        <div id="users-content" class="tab-content active-tab">
+            <h2>All Users</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                        <th>More Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><a href="/user/{{ user.get_userid() }}">{{ user.get_userid() }}</a></td>
+                        <td>{{ user.get_username() }}</td>
+                        <td>{{ user.get_useremail() }}</td>
+                        <td>{{ user.get_userphone() }}</td>
+                        <td>{{ user.get_role() }}</td>
+                        <td><a href="/delete/{{ user.get_userid() }}">Delete</a></td>
+                        <td><a href="/change_password/{{ user.get_userid() }}">Change Password</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+        <div id="history-content" class="tab-content">
+            <h2>All Users' Borrowing History</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>History ID</th>
+                        <th>Book ID</th>
+                        <th>Action</th>
+                        <th>Action Date</th>
+                        <th>Support Message ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, history in all_users_history.items() %}
+                        {% for entry in history %}
+                        <tr>
+                            <td>{{ user }}</td>
+                            <td>{{ entry.get_history_id() }}</td>
+                            <td>{{ entry.get_book_id() }}</td>
+                            <td>{{ entry.get_action() }}</td>
+                            <td>{{ entry.get_action_date() }}</td>
+                            <td>{{ entry.get_support_message_id() }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+        <div id="late-books-content" class="tab-content">
+            <h2>All Users Late Books</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Book ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Genre</th>
+                        <th>User ID</th>
+                        <th>Days Late</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in late_books %}
+                    <tr style="color: red;">
+                        <td>{{ book.username }}</td>
+                        <td>{{ book.book_id }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.genre }}</td>
+                        <td>{{ book.user_id }}</td>
+                        <td>{{ book.days_late }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+<div id="run-reports-content" class="tab-content">
+    <h2>Run Reports</h2>
+    <form action="{{ url_for('run_report') }}" method="post">
+        <label for="date_of_action">Date of Action:</label>
+        <input type="date" id="date_of_action" name="date_of_action"><br><br>
+
+        <label for="action_type">Action Type:</label>
+        <select id="action_type" name="action_type">
+            <option value="">--Select Action Type--</option>
+            {% for action in actions %}
+                <option value="{{ action }}">{{ action }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="username">Username:</label>
+        <select id="username" name="username">
+            <option value="">--Select Username--</option>
+            {% for user in users %}
+                <option value="{{ user.get_username() }}">{{ user.get_username() }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <button type="submit">Run Report</button>
+    </form>
+<footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+</div>
+
+    {% elif user_role == 'customer' %}
+        <h1>Customer Dashboard</h1>
+        <div class="tabs">
+            <div id="customer-info-tab" class="active">Your Account Info</div>
+            <div id="wishlist-tab">Your Wishlist</div>
+            <div id="history-tab">Your History</div>
+            <div id="late-books-tab">Your Late Books</div>
+        </div>
+
+        <div id="customer-info-content" class="tab-content active-tab">
+            <h2>Your Info</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ user.get_userid() }}</td>
+                        <td>{{ user.get_username() }}</td>
+                        <td>{{ user.get_useremail() }}</td>
+                        <td>{{ user.get_userphone() }}</td>
+                        <td>{{ user.get_role() }}</td>
+                        <td><a href="/change_password/{{ user.get_userid() }}">Change Password</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+        <div id="wishlist-content" class="tab-content">
+            <h2>Your Wishlist</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Genre</th>
+                        <th>Available in Library</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in wishlist %}
+                    <tr>
+                        <td>{{ book.get_book_title() }}</td>
+                        <td>{{ book.get_book_author() }}</td>
+                        <td>{{ book.get_genre() }}</td>
+                        {% if book.get_is_available() %}
+                        <td>Now in Inventory</td>
+                        {% else %}
+                        <td>Not Yet</td>
+                        {% endif %}
+                        <td>
+                            <form action="{{ url_for('remove_from_wishlist') }}" method="post">
+                                <input type="hidden" name="wishlist_id" value="{{ book.get_wishlist_id() }}">
+                                <input type="submit" value="Remove from Wishlist">
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+        <div id="history-content" class="tab-content">
+            <h2>Your History</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Action</th>
+                        <th>Action Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_history in history %}
+                    <tr>
+                        <td>{{ user_history.book_title }}</td>
+                        <td>{{ user_history.get_action() }}</td>
+                        <td>{{ user_history.get_action_date() }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+        <div id="late-books-content" class="tab-content">
+            <h2>Your Late Books</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Genre</th>
+                        <th>Days Late</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in late_books %}
+                    <tr style="color: red;">
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.genre }}</td>
+                        <td>{{ book.days_late }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+        <div id="run-reports-content" class="tab-content">
+            <h2>Run Reports</h2>
+            <form method="post" action="{{ url_for('run_report') }}">
+                <label for="date_of_action">Date of Action:</label>
+                <input type="date" id="date_of_action" name="date_of_action"><br><br>
+
+                <label for="action_type">Action Type:</label>
+                <input type="text" id="action_type" name="action_type"><br><br>
+
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username"><br><br>
+
+                <input type="submit" value="Run Report">
+            </form>
+        <footer> <p><a href="terms_of_service.html">Terms of Service</a>
+    <a href="privacy_policy.html">Privacy Policy</a></p></footer>
+        </div>
+
+
+    {% endif %}
+        <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+
+{% endblock %}
+
+</body>
+
+</html>

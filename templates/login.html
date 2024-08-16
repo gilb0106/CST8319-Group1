@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DeweyDB Login</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/login.css">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+</head>
+<body>
+    {% if error_message %}
+    <div class="error-message">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+<div class="main">
+    <h1>DeweyDB</h1>
+    <h3>Enter your login credentials</h3>
+    <form action="{{ url_for('login') }}" method="post">
+        <label for="uname">
+            Username:
+        </label>
+        <input type="text"
+               id="username"
+               name="uname"
+               placeholder="Enter your Username" required>
+        <label for="psw">
+            Password:
+        </label>
+        <input type="password"
+               id="password"
+               name="psw"
+               placeholder="Enter your Password" required>
+                <div>
+            <input type="checkbox" id="tos" name="tos" required>
+            <label for="tos"> I agree to the <a href="/terms_of_service.html">Terms of Service</a></label>
+        </div>
+        <div class="wrap">
+            <button type="submit">
+                Submit
+            </button>
+        </div>
+    </form>
+    <p>
+        Not registered?
+        <a href="register"
+           style="text-decoration: none;">
+            Create an account
+        </a>
+    </p>
+        <p><a href="forgot_password.html">Forgot Password?</a></p>
+
+</div>
+
+        <p><a href="privacy_policy.html">Privacy Policy</a></p>
+
+</body>
+</html>
